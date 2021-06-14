@@ -1,114 +1,57 @@
 import discord
 import os
-import requests
-import json
-import random
 from replit import db
 from keep_alive import keep_alive
+import pokebot
+from logs.my_log import log
 
-import logging
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
+log('logs/discord.log')
+db['cmd_del'] = '$del'
+db['cmd_channel'] = '$channel'
 
+bot = discord.Client()
 
-client = discord.Client()
+for k in db.keys():
+  print(db[k])
 
-sad_words = [
-  "sad", 
-  "depressed", 
-  "unhappy", 
-  "angry", 
-  "miserable"
-]
-
-starter_encouragements = [
-  "Cheer up!",
-  "Hang in there.",
-  "You are a great person / bot!"
-]
-
-if "responding" not in db:
-  db["responding"] = True
-
-
-def get_quote():
-  response = requests.get("https://zenquotes.io/api/random")
-  json_data = json.loads(response.text)
-  quote = json_data[0]['q'] + " -" + json_data[0]['a']
-  return(quote)
-
-
-def update_encouragements(encouraging_message):
-  if "encouragements" in db.keys():
-    encouragements = db["encouragements"]
-    encouragements.append(encouraging_message)
-    db["encouragements"] = encouragements
-  else:
-    db["encouragements"] = [encouraging_message]
-
-
-def delete_encouragment(index):
-  encouragements = db["encouragements"]
-  if len(encouragements) > index:
-    del encouragements[index]
-  db["encouragements"] = encouragements
-
-
-@client.event
+@bot.event
 async def on_ready():
-  print('We have logged in as {0.user}'.format(client))
+  print('We have logged in as {0.user}'.format(bot))
 
-
-@client.event
+@bot.event
 async def on_message(message):
-  if message.author == client.user:
+  if message.author == bot.user:
     return
-
+  
   msg = message.content
+  channel = message.channel.id
 
-  if msg.startswith('$inspire'):
-    quote = get_quote()
-    await message.channel.send(quote)
+  for embed in message.embeds:
+    if 'A wild pokémon has appeared!' in embed.title:
+      pokebot.reset()
+      db[channel] = 'p!h'
   
-  if db["responding"]:
-    options = starter_encouragements
-    if "encouragements" in db.keys():
-      options = options + list(db["encouragements"])
+  hint_pref = 'The pokémon is '
+  if msg.startswith(hint_pref):
+    print(msg)
+    hint = msg[len(hint_pref): -1].replace('\\_', '?').lower()
+    print(hint)
+    result = pokebot.match(hint)
+    print(result)
+    if not result:
+      pokebot.reset()
+    db[channel] = f'p!c {result[0]}' if len(result) == 1 else 'p!h'
 
-    if any(word in msg for word in sad_words):
-      await message.channel.send(random.choice(options))
-
-  if msg.startswith("$new"):
-    encouraging_message = msg.split("$new ", 1)[1]
-    update_encouragements(encouraging_message)
-    await message.channel.send("New encouraging message added.")
+  caught_pref = 'Congratulations'
+  if msg.startswith(caught_pref):
+    db[channel] = ''
+    pokebot.reset()
   
-  if msg.startswith("$del"):
-    encouragements = []
-    if "encouragements" in db.keys():
-      index = int(msg.split("$del", 1)[1])
-      delete_encouragment(index)
-      encouragements = db["encouragements"]
-    await message.channel.send(encouragements)
-  
-  if msg.startswith("$list"):
-    await message.channel.send(db["encouragements"])
+  if msg.startswith(db['cmd_del']):
+    await message.delete()
 
-  if msg.startswith("$responding"):
-    value = msg.split("$responding ", 1)[1]
-
-    if value.lower() == "true":
-      db["responding"] = True
-      await message.channel.send("Responding is on.")
-    else:
-      db["responding"] = False
-      await message.channel.send("Responding is off.")
-  
-  if msg.startswith("$hello"):
-    await message.channel.send("Hello there!")
+  if msg.startswith(db['cmd_channel']):
+    await message.channel.send(f'This channel `id` is `{channel}`')
 
 keep_alive()
-client.run(os.environ['TOKEN'])
+bot.run(os.environ['TOKEN'])
