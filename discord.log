@@ -361,3 +361,19 @@
 2021-06-14 10:13:16,787:DEBUG:discord.client: Dispatching event socket_raw_receive
 2021-06-14 10:13:16,787:DEBUG:discord.gateway: For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
 2021-06-14 10:13:16,787:DEBUG:discord.client: Dispatching event socket_response
+2021-06-14 10:13:57,987:DEBUG:discord.gateway: Keeping shard ID None websocket alive with sequence 5.
+2021-06-14 10:13:58,041:DEBUG:discord.client: Dispatching event socket_raw_receive
+2021-06-14 10:13:58,042:DEBUG:discord.gateway: For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2021-06-14 10:13:58,042:DEBUG:discord.client: Dispatching event socket_response
+2021-06-14 10:14:39,246:DEBUG:discord.gateway: Keeping shard ID None websocket alive with sequence 5.
+2021-06-14 10:14:39,295:DEBUG:discord.client: Dispatching event socket_raw_receive
+2021-06-14 10:14:39,295:DEBUG:discord.gateway: For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2021-06-14 10:14:39,295:DEBUG:discord.client: Dispatching event socket_response
+2021-06-14 10:15:20,503:DEBUG:discord.gateway: Keeping shard ID None websocket alive with sequence 5.
+2021-06-14 10:15:20,555:DEBUG:discord.client: Dispatching event socket_raw_receive
+2021-06-14 10:15:20,555:DEBUG:discord.gateway: For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2021-06-14 10:15:20,555:DEBUG:discord.client: Dispatching event socket_response
+2021-06-14 10:16:01,755:DEBUG:discord.gateway: Keeping shard ID None websocket alive with sequence 5.
+2021-06-14 10:16:01,804:DEBUG:discord.client: Dispatching event socket_raw_receive
+2021-06-14 10:16:01,804:DEBUG:discord.gateway: For Shard ID None: WebSocket Event: {'t': None, 's': None, 'op': 11, 'd': None}
+2021-06-14 10:16:01,804:DEBUG:discord.client: Dispatching event socket_response
